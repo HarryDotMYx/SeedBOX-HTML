@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logging Out - ServX</title>
+    <!-- SweetAlert 2 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.8);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 25%, #0f3460 50%, #533483 75%, #667eea 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .logout-container {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 30px;
+            padding: 60px 40px;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .logout-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .logout-icon {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 30px;
+            background: var(--primary-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+            }
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 15px 40px rgba(102, 126, 234, 0.6);
+            }
+        }
+
+        .logout-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .logout-message {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .logout-status {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            border: 1px solid var(--glass-border);
+        }
+
+        .status-spinner {
+            width: 24px;
+            height: 24px;
+            border: 3px solid var(--glass-border);
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .status-text {
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .logout-footer {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-top: 30px;
+        }
+
+        .redirect-info {
+            background: rgba(102, 126, 234, 0.1);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .redirect-info i {
+            color: #667eea;
+            font-size: 1.2rem;
+            margin-right: 10px;
+        }
+
+        /* Floating particles */
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            animation: float-particle 8s linear infinite;
+        }
+
+        .particle:nth-child(1) { left: 10%; animation-delay: 0s; }
+        .particle:nth-child(2) { left: 20%; animation-delay: 1s; }
+        .particle:nth-child(3) { left: 30%; animation-delay: 2s; }
+        .particle:nth-child(4) { left: 40%; animation-delay: 3s; }
+        .particle:nth-child(5) { left: 50%; animation-delay: 4s; }
+        .particle:nth-child(6) { left: 60%; animation-delay: 5s; }
+        .particle:nth-child(7) { left: 70%; animation-delay: 6s; }
+        .particle:nth-child(8) { left: 80%; animation-delay: 7s; }
+        .particle:nth-child(9) { left: 90%; animation-delay: 8s; }
+
+        @keyframes float-particle {
+            0% {
+                transform: translateY(100vh) scale(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) scale(1);
+                opacity: 0;
+            }
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 768px) {
+            .logout-container {
+                padding: 40px 30px;
+                margin: 20px;
+            }
+            
+            .logout-icon {
+                width: 100px;
+                height: 100px;
+                font-size: 2.5rem;
+            }
+            
+            .logout-title {
+                font-size: 2rem;
+            }
+            
+            .logout-message {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+
+    <div class="logout-container animate__animated animate__zoomIn">
+        <div class="logout-icon animate__animated animate__bounceIn animate__delay-1s">
+            <i class="fas fa-sign-out-alt"></i>
+        </div>
+        
+        <h1 class="logout-title animate__animated animate__fadeInUp animate__delay-2s">
+            Logging Out
+        </h1>
+        
+        <p class="logout-message animate__animated animate__fadeInUp animate__delay-3s">
+            Thank you for using ServX Dashboard. You have been successfully logged out.
+        </p>
+        
+        <div class="logout-status animate__animated animate__fadeInUp animate__delay-4s">
+            <div class="status-spinner"></div>
+            <span class="status-text" id="statusText">Securing your session...</span>
+        </div>
+        
+        <div class="redirect-info animate__animated animate__fadeInUp animate__delay-5s">
+            <i class="fas fa-info-circle"></i>
+            <span>Redirecting to login page in <span id="countdown">3</span> seconds</span>
+        </div>
+        
+        <div class="logout-footer animate__animated animate__fadeInUp animate__delay-6s">
+            <i class="fas fa-shield-alt"></i>
+            Your session has been terminated securely
+        </div>
+    </div>
+
+    <script>
+        // Enhanced logout process with better UX
+        class LogoutManager {
+            constructor() {
+                this.countdown = 3;
+                this.init();
+            }
+
+            init() {
+                this.performLogout();
+                this.startCountdown();
+                this.showLogoutNotification();
+            }
+
+            performLogout() {
+                // Original logout logic
+                var XMHR = new XMLHttpRequest();
+                XMHR.open("GET", "{{ url_for('auth') }}", false, "no user", "no password");
+                XMHR.send();
+
+                // Update status text
+                setTimeout(() => {
+                    document.getElementById('statusText').textContent = 'Session terminated successfully';
+                }, 1000);
+            }
+
+            startCountdown() {
+                const countdownElement = document.getElementById('countdown');
+                
+                const countdownInterval = setInterval(() => {
+                    this.countdown--;
+                    countdownElement.textContent = this.countdown;
+                    
+                    if (this.countdown <= 0) {
+                        clearInterval(countdownInterval);
+                        this.redirectToLogin();
+                    }
+                }, 1000);
+            }
+
+            redirectToLogin() {
+                // Show final message
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Logout Complete',
+                    text: 'Redirecting to login page...',
+                    timer: 1000,
+                    showConfirmButton: false,
+                    background: 'rgba(255, 255, 255, 0.1)',
+                    color: '#ffffff',
+                    backdrop: 'rgba(0, 0, 0, 0.8)'
+                }).then(() => {
+                    window.location.href = "{{ url_for('index') }}";
+                });
+            }
+
+            showLogoutNotification() {
+                // Show a toast notification
+                setTimeout(() => {
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true,
+                        background: 'rgba(255, 255, 255, 0.1)',
+                        color: '#ffffff'
+                    });
+
+                    Toast.fire({
+                        icon: 'info',
+                        title: 'Logout successful',
+                        text: 'Your session has been terminated'
+                    });
+                }, 2000);
+            }
+        }
+
+        // Initialize logout manager when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            new LogoutManager();
+        });
+
+        // Prevent back button after logout
+        window.history.pushState(null, null, window.location.href);
+        window.onpopstate = function() {
+            window.history.go(1);
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,1705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="robots" content="noindex">
+    
+    <!-- Enhanced Mobile Meta Tags -->
+    <meta name="theme-color" content="#667eea">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="ServX Login">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="msapplication-TileColor" content="#667eea">
+    <meta name="msapplication-tap-highlight" content="no">
+    
+    <!-- PWA Support -->
+    <link rel="manifest" href="./manifest.json">
+    
+    <title>{{ title }} - ServX Login</title>
+    
+    <!-- Original Scripts -->
+    <script type="text/javascript" src="{{ url_for('static', filename='js/httpauth.js') }}"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    
+    <!-- Enhanced External Resources -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    
+    <!-- Icons -->
+    <link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon/favicon.ico') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><defs><linearGradient id='grad' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' style='stop-color:%23667eea'/><stop offset='100%' style='stop-color:%23764ba2'/></linearGradient></defs><rect width='180' height='180' fill='url(%23grad)' rx='40'/><text x='90' y='120' font-family='Arial, sans-serif' font-size='80' fill='white' text-anchor='middle' font-weight='bold'>S</text></svg>">
+    
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.8);
+            --shadow-light: 0 8px 32px rgba(0, 0, 0, 0.1);
+            --shadow-heavy: 0 15px 40px rgba(0, 0, 0, 0.2);
+            --safe-area-inset-top: env(safe-area-inset-top);
+            --safe-area-inset-right: env(safe-area-inset-right);
+            --safe-area-inset-bottom: env(safe-area-inset-bottom);
+            --safe-area-inset-left: env(safe-area-inset-left);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html, body {
+            height: 100%;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            -webkit-text-size-adjust: 100%;
+            scroll-behavior: smooth;
+        }
+        
+        /* Enhanced Container with Safe Area Support */
+        .container {
+            display: flex;
+            min-height: 100vh;
+            min-height: 100dvh; /* Dynamic viewport height for mobile */
+            position: relative;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 25%, #0f3460 50%, #533483 75%, #667eea 100%);
+            padding-top: var(--safe-area-inset-top);
+            padding-left: var(--safe-area-inset-left);
+            padding-right: var(--safe-area-inset-right);
+            padding-bottom: var(--safe-area-inset-bottom);
+        }
+        
+        /* Enhanced Welcome Section */
+        .welcome-section {
+            flex: 1;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 60px 40px;
+            overflow: hidden;
+        }
+        
+        .welcome-content {
+            position: relative;
+            z-index: 10;
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        .welcome-logo {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 30px;
+            background: var(--glass-bg);
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--shadow-light);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .welcome-logo:hover {
+            transform: scale(1.05) rotate(5deg);
+            box-shadow: var(--shadow-heavy);
+        }
+        
+        .welcome-logo i {
+            font-size: 3rem;
+            color: var(--text-primary);
+        }
+        
+        .welcome-title {
+            font-size: clamp(32px, 6vw, 56px);
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            line-height: 1.1;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .welcome-subtitle {
+            font-size: clamp(18px, 3vw, 24px);
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+        
+        .welcome-description {
+            font-size: clamp(14px, 2.5vw, 18px);
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin-bottom: 40px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .welcome-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 40px;
+        }
+        
+        .feature-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 25px 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        .feature-card:hover,
+        .feature-card:active {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-heavy);
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .feature-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+        
+        .feature-desc {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+        
+        /* Mobile Feature Cards */
+        .mobile-features {
+            display: none;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .mobile-feature {
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            padding: 20px 15px;
+            text-align: center;
+            transition: all 0.3s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        .mobile-feature:active {
+            transform: scale(0.95);
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        .mobile-feature i {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+            color: #667eea;
+        }
+        
+        .mobile-feature-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+        
+        .mobile-feature-desc {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            line-height: 1.3;
+        }
+        
+        /* Floating Elements */
+        .floating-elements {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        
+        .floating-element {
+            position: absolute;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            animation: float 8s ease-in-out infinite;
+        }
+        
+        .floating-element:nth-child(1) {
+            width: 100px;
+            height: 100px;
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+        
+        .floating-element:nth-child(2) {
+            width: 150px;
+            height: 80px;
+            top: 60%;
+            left: 80%;
+            animation-delay: 2s;
+        }
+        
+        .floating-element:nth-child(3) {
+            width: 80px;
+            height: 120px;
+            top: 30%;
+            left: 70%;
+            animation-delay: 4s;
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px) rotate(0deg);
+                opacity: 0.6;
+            }
+            50% {
+                transform: translateY(-20px) rotate(5deg);
+                opacity: 0.8;
+            }
+        }
+        
+        /* Enhanced Login Section */
+        .login-section {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 30px;
+            position: relative;
+        }
+        
+        .login-container {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 30px;
+            padding: 40px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: var(--shadow-heavy);
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .login-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+        }
+        
+        .login-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .login-logo {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background: var(--primary-gradient);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-light);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        .login-logo:active {
+            transform: scale(0.95);
+        }
+        
+        .login-logo img {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+        }
+        
+        .login-logo i {
+            font-size: 2rem;
+            color: white;
+        }
+        
+        .login-title {
+            font-size: clamp(24px, 4vw, 28px);
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .login-subtitle {
+            color: var(--text-secondary);
+            font-size: clamp(14px, 2.5vw, 16px);
+            font-weight: 500;
+        }
+        
+        /* Enhanced Form Groups */
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        .form-group.focused .input-wrapper {
+            transform: translateY(-2px);
+        }
+        
+        .form-group label {
+            display: block;
+            color: var(--text-primary);
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+        
+        .form-group.focused label {
+            color: #667eea;
+        }
+        
+        .input-wrapper {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .input-icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            z-index: 2;
+            transition: all 0.3s ease;
+        }
+        
+        .form-group.focused .input-icon {
+            color: #667eea;
+        }
+        
+        /* Enhanced Form Controls */
+        .form-control {
+            width: 100%;
+            padding: 18px 20px 18px 55px;
+            border: 2px solid var(--glass-border);
+            border-radius: 15px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+            backdrop-filter: blur(10px);
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            
+            /* Enhanced mobile input support */
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+            -webkit-user-select: text;
+            user-select: text;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: #667eea;
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .form-control::placeholder {
+            color: var(--text-secondary);
+            opacity: 0.8;
+        }
+        
+        /* Password Toggle */
+        .password-toggle {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            cursor: pointer;
+            z-index: 3;
+            padding: 5px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        .password-toggle:hover,
+        .password-toggle:active {
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Enhanced Form Options */
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            font-size: 14px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .remember-me {
+            display: flex;
+            align-items: center;
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: color 0.3s ease;
+            -webkit-tap-highlight-color: transparent;
+            padding: 5px;
+            border-radius: 8px;
+        }
+        
+        .remember-me:hover,
+        .remember-me:active {
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        .remember-me input[type="checkbox"] {
+            margin-right: 10px;
+            accent-color: #667eea;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        
+        .forgot-password {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            padding: 5px 8px;
+            border-radius: 8px;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        .forgot-password:hover,
+        .forgot-password:active {
+            color: #764ba2;
+            text-decoration: none;
+            background: rgba(102, 126, 234, 0.1);
+        }
+        
+        .forgot-password::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 3px;
+            left: 8px;
+            background: var(--primary-gradient);
+            transition: width 0.3s ease;
+        }
+        
+        .forgot-password:hover::after {
+            width: calc(100% - 16px);
+        }
+        
+        /* Enhanced Login Button */
+        .btn-login {
+            width: 100%;
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            padding: 18px 25px;
+            border-radius: 15px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+            overflow: hidden;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+            
+            /* Enhanced accessibility */
+            min-height: 48px; /* WCAG AA compliant touch target */
+        }
+        
+        .btn-login::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .btn-login:hover::before {
+            left: 100%;
+        }
+        
+        .btn-login:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(102, 126, 234, 0.5);
+        }
+        
+        .btn-login:active {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-login:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .btn-login.loading {
+            position: relative;
+            color: transparent;
+        }
+        
+        .btn-login.loading::after {
+            content: '';
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            top: 50%;
+            left: 50%;
+            margin-left: -12px;
+            margin-top: -12px;
+            border: 3px solid transparent;
+            border-top-color: #ffffff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Biometric Login Button */
+        .btn-biometric {
+            width: 100%;
+            background: var(--success-gradient);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 15px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(79, 172, 254, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 15px;
+            -webkit-tap-highlight-color: transparent;
+            display: none; /* Hidden by default, shown when biometric is available */
+        }
+        
+        .btn-biometric:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(79, 172, 254, 0.4);
+        }
+        
+        .btn-biometric:active {
+            transform: translateY(0);
+        }
+        
+        /* Enhanced Footer */
+        .footer {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            color: var(--text-secondary);
+            font-size: 12px;
+            font-weight: 500;
+            text-align: center;
+            padding: 12px 24px;
+            border-radius: 25px;
+            z-index: 1000;
+            box-shadow: var(--shadow-light);
+            max-width: calc(100vw - 40px);
+        }
+        
+        .heart {
+            color: #ff6b6b;
+            font-weight: bold;
+            display: inline-block;
+            animation: heartbeat 2s ease-in-out infinite;
+        }
+        
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        /* Connection Status Indicator */
+        .connection-status {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 8px 15px;
+            font-size: 12px;
+            font-weight: 600;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .connection-status.online {
+            color: #4ade80;
+        }
+        
+        .connection-status.offline {
+            color: #f87171;
+        }
+        
+        .connection-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: currentColor;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        /* Loading Animation */
+        .page-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+        
+        .loader {
+            width: 60px;
+            height: 60px;
+            border: 4px solid var(--glass-border);
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        .page-loader.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        /* Enhanced Custom SweetAlert 2 styling */
+        .swal2-popup {
+            background: var(--glass-bg) !important;
+            backdrop-filter: blur(20px) !important;
+            border: 1px solid var(--glass-border) !important;
+            border-radius: 20px !important;
+            box-shadow: var(--shadow-heavy) !important;
+            color: var(--text-primary) !important;
+            font-family: inherit !important;
+        }
+        
+        .swal2-title {
+            color: var(--text-primary) !important;
+            font-weight: 700 !important;
+        }
+        
+        .swal2-content {
+            color: var(--text-secondary) !important;
+        }
+        
+        .swal2-confirm {
+            background: var(--primary-gradient) !important;
+            border-radius: 12px !important;
+            font-weight: 600 !important;
+            padding: 12px 24px !important;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4) !important;
+            border: none !important;
+            min-height: 44px !important;
+        }
+        
+        .swal2-cancel {
+            border-radius: 12px !important;
+            font-weight: 600 !important;
+            padding: 12px 24px !important;
+            min-height: 44px !important;
+        }
+        
+        /* Responsive Design - Tablet */
+        @media (max-width: 1024px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .welcome-section {
+                flex: none;
+                min-height: 45vh;
+                padding: 40px 30px 20px;
+            }
+            
+            .login-section {
+                flex: none;
+                min-height: 55vh;
+                padding: 20px 30px 40px;
+            }
+            
+            .welcome-features {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 15px;
+            }
+        }
+        
+        /* Responsive Design - Mobile */
+        @media (max-width: 768px) {
+            .welcome-section {
+                min-height: 40vh;
+                padding: 30px 20px 15px;
+            }
+            
+            .login-section {
+                min-height: 60vh;
+                padding: 15px 20px 30px;
+            }
+            
+            .login-container {
+                padding: 30px 25px;
+                margin-bottom: 100px;
+                border-radius: 25px;
+            }
+            
+            .form-options {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .floating-elements {
+                display: none;
+            }
+            
+            .welcome-features {
+                display: none;
+            }
+            
+            .mobile-features {
+                display: grid;
+            }
+            
+            .footer {
+                position: fixed;
+                bottom: 10px;
+                font-size: 11px;
+                padding: 8px 16px;
+                border-radius: 20px;
+            }
+            
+            .connection-status {
+                top: 10px;
+                right: 10px;
+                padding: 6px 12px;
+                font-size: 11px;
+            }
+        }
+        
+        /* Responsive Design - Small Mobile */
+        @media (max-width: 480px) {
+            .welcome-section {
+                min-height: 35vh;
+                padding: 20px 15px 10px;
+            }
+            
+            .login-section {
+                min-height: 65vh;
+                padding: 10px 15px 25px;
+            }
+            
+            .login-container {
+                padding: 25px 20px;
+                border-radius: 20px;
+            }
+            
+            .form-control {
+                padding: 16px 18px 16px 50px;
+                font-size: 16px; /* Prevent zoom on iOS */
+            }
+            
+            .btn-login {
+                padding: 16px 20px;
+                font-size: 14px;
+                min-height: 48px;
+            }
+            
+            .welcome-logo {
+                width: 80px;
+                height: 80px;
+                margin-bottom: 20px;
+            }
+            
+            .welcome-logo i {
+                font-size: 2rem;
+            }
+            
+            .login-logo {
+                width: 60px;
+                height: 60px;
+            }
+            
+            .login-logo i {
+                font-size: 1.5rem;
+            }
+        }
+        
+        /* Enhanced Landscape Mobile Support */
+        @media (max-height: 500px) and (orientation: landscape) {
+            .container {
+                flex-direction: row;
+            }
+            
+            .welcome-section {
+                flex: 0.4;
+                min-height: 100vh;
+                padding: 20px 15px;
+            }
+            
+            .login-section {
+                flex: 0.6;
+                min-height: 100vh;
+                padding: 20px 25px;
+            }
+            
+            .welcome-features,
+            .mobile-features {
+                display: none;
+            }
+            
+            .welcome-description {
+                font-size: 14px;
+                margin-bottom: 20px;
+            }
+            
+            .footer {
+                bottom: 5px;
+                font-size: 10px;
+                padding: 6px 14px;
+            }
+        }
+        
+        /* Dark Mode Detection */
+        @media (prefers-color-scheme: light) {
+            :root {
+                --text-primary: #1a1a2e;
+                --text-secondary: rgba(26, 26, 46, 0.8);
+            }
+        }
+        
+        /* Reduced Motion */
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+            
+            .floating-elements {
+                display: none;
+            }
+        }
+        
+        /* High Contrast Mode */
+        @media (prefers-contrast: high) {
+            :root {
+                --glass-bg: rgba(255, 255, 255, 0.2);
+                --glass-border: rgba(255, 255, 255, 0.4);
+            }
+            
+            .form-control {
+                border-width: 3px;
+            }
+            
+            .btn-login {
+                border: 2px solid white;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Page Loader -->
+    <div class="page-loader" id="pageLoader">
+        <div class="loader"></div>
+    </div>
+    
+    <!-- Connection Status -->
+    <div class="connection-status online" id="connectionStatus">
+        <div class="connection-indicator"></div>
+        <span>Online</span>
+    </div>
+
+    <div class="container animate__animated animate__fadeIn">
+        <!-- Left Side - Welcome Section -->
+        <div class="welcome-section">
+            <div class="floating-elements">
+                <div class="floating-element"></div>
+                <div class="floating-element"></div>
+                <div class="floating-element"></div>
+            </div>
+            
+            <div class="welcome-content">
+                <div class="welcome-logo animate__animated animate__bounceIn">
+                    <i class="fas fa-server"></i>
+                </div>
+                
+                <h1 class="welcome-title animate__animated animate__fadeInUp animate__delay-1s">
+                    Welcome to ServX
+                </h1>
+                
+                <p class="welcome-subtitle animate__animated animate__fadeInUp animate__delay-2s">
+                    Your Ultimate Server Management Platform
+                </p>
+                
+                <p class="welcome-description animate__animated animate__fadeInUp animate__delay-3s">
+                    Experience the next generation of server management with ServX. 
+                    Fast, secure, and always reliable - designed for professionals who demand excellence.
+                </p>
+                
+                <div class="welcome-features animate__animated animate__fadeInUp animate__delay-4s">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <div class="feature-title">Lightning Fast</div>
+                        <div class="feature-desc">Optimized for speed and performance</div>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="feature-title">Secure</div>
+                        <div class="feature-desc">Enterprise-grade security protocols</div>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="feature-title">24/7 Uptime</div>
+                        <div class="feature-desc">Always available when you need it</div>
+                    </div>
+                </div>
+                
+                <!-- Mobile-optimized feature cards -->
+                <div class="mobile-features">
+                    <div class="mobile-feature">
+                        <i class="fas fa-mobile-alt"></i>
+                        <div class="mobile-feature-title">Mobile Optimized</div>
+                        <div class="mobile-feature-desc">Perfect on any device</div>
+                    </div>
+                    
+                    <div class="mobile-feature">
+                        <i class="fas fa-wifi"></i>
+                        <div class="mobile-feature-title">Offline Ready</div>
+                        <div class="mobile-feature-desc">Works without internet</div>
+                    </div>
+                    
+                    <div class="mobile-feature">
+                        <i class="fas fa-fingerprint"></i>
+                        <div class="mobile-feature-title">Biometric Login</div>
+                        <div class="mobile-feature-desc">Secure & convenient</div>
+                    </div>
+                    
+                    <div class="mobile-feature">
+                        <i class="fas fa-rocket"></i>
+                        <div class="mobile-feature-title">PWA Ready</div>
+                        <div class="mobile-feature-desc">Install like an app</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Side - Login Section -->
+        <div class="login-section">
+            <div class="login-container animate__animated animate__fadeInRight animate__delay-1s">
+                <div class="login-header">
+                    <div class="login-logo">
+                        <img src="{{ url_for('static', filename='img/logo-sm.png') }}" alt="ServX Logo" onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=\'fas fa-server\'></i>';">
+                    </div>
+                    <h2 class="login-title">User Login</h2>
+                    <p class="login-subtitle">Sign in to access your dashboard</p>
+                </div>
+
+                <form class="form-signin" id="loginForm" novalidate>
+                    <div class="form-group">
+                        <label for="basic-username">Username</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-user input-icon"></i>
+                            <input name="username"
+                                   type="text"
+                                   id="basic-username"
+                                   class="form-control"
+                                   placeholder="Enter your username"
+                                   required
+                                   autofocus
+                                   autocomplete="username"
+                                   spellcheck="false"
+                                   autocapitalize="none">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="basic-password">Password</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-lock input-icon"></i>
+                            <input name="password"
+                                   type="password"
+                                   id="basic-password"
+                                   class="form-control"
+                                   placeholder="Enter your password"
+                                   required
+                                   autocomplete="current-password">
+                            <i class="fas fa-eye password-toggle" id="passwordToggle"></i>
+                        </div>
+                    </div>
+
+                    <div class="form-options">
+                        <label class="remember-me">
+                            <input type="checkbox" id="remember">
+                            Remember me
+                        </label>
+                        <a href="#" class="forgot-password" id="forgot-link">
+                            <i class="fas fa-question-circle"></i>
+                            Forgot password?
+                        </a>
+                    </div>
+
+                    <button type="submit"
+                            id="btnsubmit"
+                            class="btn-login">
+                        <i class="fas fa-sign-in-alt"></i>
+                        Login to Dashboard
+                    </button>
+                    
+                    <!-- Biometric Login Button (shown when available) -->
+                    <button type="button"
+                            id="btnBiometric"
+                            class="btn-biometric">
+                        <i class="fas fa-fingerprint"></i>
+                        Use Biometric Login
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer animate__animated animate__fadeInUp animate__delay-5s">
+        <i class="fas fa-code"></i>
+        Created by HarryDotMY with <span class="heart">♥</span>
+        <span>© 2025 ServX Networks</span>
+    </div>
+
+    <script>
+        // Enhanced Mobile-Friendly Login System
+        class MobileLoginManager {
+            constructor() {
+                this.isMobile = window.innerWidth <= 768;
+                this.isOnline = navigator.onLine;
+                this.hasWebAuthn = 'credentials' in navigator && 'create' in navigator.credentials;
+                this.init();
+            }
+
+            init() {
+                this.hideLoader();
+                this.initEventListeners();
+                this.initToast();
+                this.initConnectionStatus();
+                this.initBiometricAuth();
+                this.initPWASupport();
+                this.showWelcomeMessage();
+                this.initAccessibilityFeatures();
+            }
+
+            hideLoader() {
+                setTimeout(() => {
+                    document.getElementById('pageLoader').classList.add('hidden');
+                }, 1000);
+            }
+
+            initToast() {
+                this.Toast = Swal.mixin({
+                    toast: true,
+                    position: this.isMobile ? 'top' : 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    background: 'rgba(255, 255, 255, 0.1)',
+                    color: '#ffffff',
+                    customClass: {
+                        popup: 'mobile-toast'
+                    },
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer);
+                        toast.addEventListener('mouseleave', Swal.resumeTimer);
+                    }
+                });
+            }
+
+            initConnectionStatus() {
+                const statusElement = document.getElementById('connectionStatus');
+                
+                const updateStatus = () => {
+                    const isOnline = navigator.onLine;
+                    statusElement.className = `connection-status ${isOnline ? 'online' : 'offline'}`;
+                    statusElement.innerHTML = `
+                        <div class="connection-indicator"></div>
+                        <span>${isOnline ? 'Online' : 'Offline'}</span>
+                    `;
+                    
+                    if (isOnline !== this.isOnline) {
+                        this.Toast.fire({
+                            icon: isOnline ? 'success' : 'warning',
+                            title: isOnline ? 'Back Online' : 'Connection Lost',
+                            text: isOnline ? 'Internet connection restored' : 'Working in offline mode'
+                        });
+                        this.isOnline = isOnline;
+                    }
+                };
+                
+                window.addEventListener('online', updateStatus);
+                window.addEventListener('offline', updateStatus);
+                updateStatus();
+            }
+
+            initBiometricAuth() {
+                if (this.hasWebAuthn && this.isMobile) {
+                    const biometricBtn = document.getElementById('btnBiometric');
+                    biometricBtn.style.display = 'block';
+                    
+                    biometricBtn.addEventListener('click', () => {
+                        this.handleBiometricLogin();
+                    });
+                }
+            }
+
+            async handleBiometricLogin() {
+                try {
+                    // This is a simplified example - implement according to your WebAuthn setup
+                    this.Toast.fire({
+                        icon: 'info',
+                        title: 'Biometric Authentication',
+                        text: 'Please use your biometric sensor'
+                    });
+                    
+                    // Simulate biometric authentication
+                    await new Promise(resolve => setTimeout(resolve, 2000));
+                    
+                    this.Toast.fire({
+                        icon: 'success',
+                        title: 'Biometric Login Successful!',
+                        text: 'Welcome back!'
+                    });
+                    
+                    // Proceed with login
+                    login();
+                    
+                } catch (error) {
+                    console.error('Biometric auth error:', error);
+                    await Swal.fire({
+                        icon: 'error',
+                        title: 'Biometric Authentication Failed',
+                        text: 'Please try again or use password login.',
+                        confirmButtonText: 'Try Again',
+                        background: 'rgba(255, 255, 255, 0.1)',
+                        color: '#ffffff',
+                        backdrop: 'rgba(0, 0, 0, 0.8)'
+                    });
+                }
+            }
+
+            initPWASupport() {
+                // Service Worker registration
+                if ('serviceWorker' in navigator) {
+                    navigator.serviceWorker.register('./static/sw.js')
+                        .then(registration => {
+                            console.log('SW registered:', registration);
+                        })
+                        .catch(error => {
+                            console.log('SW registration failed:', error);
+                        });
+                }
+                
+                // Install prompt handling
+                let deferredPrompt;
+                window.addEventListener('beforeinstallprompt', (e) => {
+                    e.preventDefault();
+                    deferredPrompt = e;
+                    
+                    // Show install suggestion after delay
+                    setTimeout(() => {
+                        this.showInstallPrompt(deferredPrompt);
+                    }, 5000);
+                });
+            }
+
+            showInstallPrompt(deferredPrompt) {
+                if (!this.isMobile) return;
+                
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Install ServX App',
+                    text: 'Install ServX on your device for a better experience!',
+                    showCancelButton: true,
+                    confirmButtonText: 'Install',
+                    cancelButtonText: 'Maybe Later',
+                    background: 'rgba(255, 255, 255, 0.1)',
+                    color: '#ffffff',
+                    backdrop: 'rgba(0, 0, 0, 0.8)'
+                }).then((result) => {
+                    if (result.isConfirmed && deferredPrompt) {
+                        deferredPrompt.prompt();
+                        deferredPrompt.userChoice.then((choiceResult) => {
+                            if (choiceResult.outcome === 'accepted') {
+                                this.Toast.fire({
+                                    icon: 'success',
+                                    title: 'App Installing',
+                                    text: 'ServX will be added to your home screen'
+                                });
+                            }
+                            deferredPrompt = null;
+                        });
+                    }
+                });
+            }
+
+            initAccessibilityFeatures() {
+                // Enhanced keyboard navigation
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Tab') {
+                        document.body.classList.add('keyboard-nav');
+                    }
+                });
+                
+                document.addEventListener('mousedown', () => {
+                    document.body.classList.remove('keyboard-nav');
+                });
+            }
+
+            showWelcomeMessage() {
+                setTimeout(() => {
+                    this.Toast.fire({
+                        icon: 'info',
+                        title: 'Welcome to ServX',
+                        text: this.isMobile ? 'Tap to continue' : 'Please sign in to continue'
+                    });
+                }, 2000);
+            }
+
+            initEventListeners() {
+                // Form submission with original httpauth.js integration
+                document.getElementById('loginForm').addEventListener('submit', (e) => {
+                    this.handleLogin(e);
+                });
+
+                // Password toggle
+                document.getElementById('passwordToggle').addEventListener('click', () => {
+                    this.togglePassword();
+                });
+
+                // Forgot password
+                document.getElementById('forgot-link').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    this.showForgotPassword();
+                });
+
+                // Enhanced input focus handling
+                document.querySelectorAll('.form-control').forEach(input => {
+                    input.addEventListener('focus', this.handleInputFocus.bind(this));
+                    input.addEventListener('blur', this.handleInputBlur.bind(this));
+                    input.addEventListener('input', this.handleInputChange.bind(this));
+                });
+
+                // Touch and gesture support
+                this.initTouchSupport();
+
+                // Orientation change handling
+                window.addEventListener('orientationchange', () => {
+                    setTimeout(() => {
+                        this.handleOrientationChange();
+                    }, 500);
+                });
+
+                // Prevent double-tap zoom on mobile
+                let lastTouchEnd = 0;
+                document.addEventListener('touchend', (event) => {
+                    const now = (new Date()).getTime();
+                    if (now - lastTouchEnd <= 300) {
+                        event.preventDefault();
+                    }
+                    lastTouchEnd = now;
+                }, { passive: false });
+
+                // Enhanced enter key support
+                document.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter' && !e.target.closest('.swal2-container')) {
+                        e.preventDefault();
+                        this.handleLogin(e);
+                    }
+                });
+            }
+
+            initTouchSupport() {
+                // Add haptic feedback for supported devices
+                const addHapticFeedback = (element, intensity = 'light') => {
+                    element.addEventListener('touchstart', () => {
+                        if (navigator.vibrate) {
+                            navigator.vibrate(intensity === 'light' ? 10 : 25);
+                        }
+                    });
+                };
+
+                // Add haptic feedback to interactive elements
+                document.querySelectorAll('.btn-login, .feature-card, .mobile-feature').forEach(el => {
+                    addHapticFeedback(el, 'light');
+                });
+
+                // Swipe gestures
+                let startX, startY;
+                
+                document.addEventListener('touchstart', (e) => {
+                    startX = e.touches[0].clientX;
+                    startY = e.touches[0].clientY;
+                }, { passive: true });
+
+                document.addEventListener('touchend', (e) => {
+                    if (!startX || !startY) return;
+                    
+                    const endX = e.changedTouches[0].clientX;
+                    const endY = e.changedTouches[0].clientY;
+                    
+                    const deltaX = endX - startX;
+                    const deltaY = endY - startY;
+                    
+                    // Detect swipe gestures
+                    if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 50) {
+                        if (deltaX > 0) {
+                            // Swipe right - could trigger password visibility toggle
+                            if (document.activeElement && document.activeElement.type === 'password') {
+                                this.togglePassword();
+                            }
+                        }
+                    }
+                    
+                    startX = startY = null;
+                }, { passive: true });
+            }
+
+            togglePassword() {
+                const passwordInput = document.getElementById('basic-password');
+                const toggleIcon = document.getElementById('passwordToggle');
+                
+                if (passwordInput.type === 'password') {
+                    passwordInput.type = 'text';
+                    toggleIcon.className = 'fas fa-eye-slash password-toggle';
+                } else {
+                    passwordInput.type = 'password';
+                    toggleIcon.className = 'fas fa-eye password-toggle';
+                }
+                
+                // Add haptic feedback
+                if (navigator.vibrate) {
+                    navigator.vibrate(15);
+                }
+            }
+
+            handleInputFocus(e) {
+                e.target.parentElement.parentElement.classList.add('focused');
+                
+                // Mobile keyboard handling
+                if (this.isMobile) {
+                    setTimeout(() => {
+                        e.target.scrollIntoView({ 
+                            behavior: 'smooth', 
+                            block: 'center',
+                            inline: 'nearest'
+                        });
+                    }, 300);
+                }
+            }
+
+            handleInputBlur(e) {
+                e.target.parentElement.parentElement.classList.remove('focused');
+            }
+
+            handleInputChange(e) {
+                // Real-time validation feedback
+                const input = e.target;
+                const value = input.value.trim();
+                
+                if (input.id === 'basic-username') {
+                    if (value.length > 0 && value.length < 3) {
+                        input.style.borderColor = '#f87171';
+                    } else if (value.length >= 3) {
+                        input.style.borderColor = '#4ade80';
+                    } else {
+                        input.style.borderColor = 'var(--glass-border)';
+                    }
+                }
+            }
+
+            handleOrientationChange() {
+                // Scroll to top and refresh layout
+                window.scrollTo(0, 0);
+                
+                // Update mobile detection
+                this.isMobile = window.innerWidth <= 768;
+                
+                // Show orientation tip for small screens in landscape
+                if (window.innerHeight < 500 && window.innerWidth > window.innerHeight) {
+                    this.Toast.fire({
+                        icon: 'info',
+                        title: 'Landscape Mode',
+                        text: 'Rotate for better experience',
+                        timer: 2000
+                    });
+                }
+            }
+
+            async handleLogin(event) {
+                event.preventDefault();
+                
+                const button = document.getElementById('btnsubmit');
+                const username = document.getElementById('basic-username').value.trim();
+                const password = document.getElementById('basic-password').value;
+
+                // Enhanced validation
+                if (!username || !password) {
+                    await Swal.fire({
+                        icon: 'warning',
+                        title: 'Missing Information',
+                        text: 'Please enter both username and password.',
+                        confirmButtonText: 'Got it!',
+                        background: 'rgba(255, 255, 255, 0.1)',
+                        color: '#ffffff',
+                        backdrop: 'rgba(0, 0, 0, 0.8)',
+                        customClass: {
+                            confirmButton: 'swal2-confirm'
+                        }
+                    });
+                    
+                    // Focus on first empty field
+                    if (!username) {
+                        document.getElementById('basic-username').focus();
+                    } else {
+                        document.getElementById('basic-password').focus();
+                    }
+                    return;
+                }
+
+                // Show loading state
+                button.classList.add('loading');
+                button.disabled = true;
+
+                // Show authentication toast
+                this.Toast.fire({
+                    icon: 'info',
+                    title: 'Authenticating...',
+                    text: 'Please wait while we verify your credentials'
+                });
+
+                try {
+                    // Add slight delay for better UX
+                    await new Promise(resolve => setTimeout(resolve, 800));
+                    
+                    // Use the original login function from httpauth.js
+                    const loginResult = login();
+                    
+                    // The original login function handles the response
+                    // We just provide enhanced UX feedback
+                    
+                } catch (error) {
+                    console.error('Login error:', error);
+                    
+                    // Enhanced error handling
+                    await Swal.fire({
+                        icon: 'error',
+                        title: 'Login Failed',
+                        text: 'Invalid username or password. Please try again.',
+                        confirmButtonText: 'Try Again',
+                        background: 'rgba(255, 255, 255, 0.1)',
+                        color: '#ffffff',
+                        backdrop: 'rgba(0, 0, 0, 0.8)',
+                        customClass: {
+                            confirmButton: 'swal2-confirm'
+                        }
+                    });
+                    
+                    // Focus back to username field and clear password
+                    document.getElementById('basic-username').focus();
+                    document.getElementById('basic-password').value = '';
+                    
+                } finally {
+                    // Reset button state
+                    button.classList.remove('loading');
+                    button.disabled = false;
+                }
+            }
+
+            showForgotPassword() {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Password Recovery',
+                    html: `
+                        <div style="text-align: center; padding: 20px;">
+                            <div style="font-size: 60px; margin-bottom: 20px;">🔐</div>
+                            <p style="font-size: 16px; color: rgba(255, 255, 255, 0.8); margin-bottom: 20px; line-height: 1.6;">
+                                For password recovery assistance, please contact your system administrator.
+                            </p>
+                            <div style="background: rgba(255, 255, 255, 0.1); padding: 20px; border-radius: 15px; margin: 20px 0; backdrop-filter: blur(10px);">
+                                <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 10px;">
+                                    <i class="fas fa-headset" style="font-size: 24px; color: #667eea; margin-right: 10px;"></i>
+                                    <strong style="color: #ffffff; font-size: 18px;">Need Help?</strong>
+                                </div>
+                                <p style="color: rgba(255, 255, 255, 0.8); font-size: 14px; margin: 0;">
+                                    Contact your administrator for immediate assistance
+                                </p>
+                            </div>
+                            <div style="display: flex; gap: 15px; justify-content: center; margin-top: 20px; flex-wrap: wrap;">
+                                <div style="text-align: center; padding: 10px; border-radius: 10px; background: rgba(255, 255, 255, 0.05); min-width: 80px;">
+                                    <i class="fas fa-envelope" style="font-size: 20px; color: #667eea; margin-bottom: 5px;"></i>
+                                    <p style="font-size: 12px; color: rgba(255, 255, 255, 0.6); margin: 0;">Email Support</p>
+                                </div>
+                                <div style="text-align: center; padding: 10px; border-radius: 10px; background: rgba(255, 255, 255, 0.05); min-width: 80px;">
+                                    <i class="fas fa-phone" style="font-size: 20px; color: #667eea; margin-bottom: 5px;"></i>
+                                    <p style="font-size: 12px; color: rgba(255, 255, 255, 0.6); margin: 0;">Phone Support</p>
+                                </div>
+                                <div style="text-align: center; padding: 10px; border-radius: 10px; background: rgba(255, 255, 255, 0.05); min-width: 80px;">
+                                    <i class="fab fa-discord" style="font-size: 20px; color: #667eea; margin-bottom: 5px;"></i>
+                                    <p style="font-size: 12px; color: rgba(255, 255, 255, 0.6); margin: 0;">Discord</p>
+                                </div>
+                            </div>
+                        </div>
+                    `,
+                    confirmButtonText: 'Got it!',
+                    confirmButtonColor: '#667eea',
+                    background: 'rgba(255, 255, 255, 0.1)',
+                    color: '#ffffff',
+                    backdrop: 'rgba(0, 0, 0, 0.8)',
+                    showClass: {
+                        popup: 'animate__animated animate__zoomIn'
+                    },
+                    hideClass: {
+                        popup: 'animate__animated animate__zoomOut'
+                    },
+                    customClass: {
+                        confirmButton: 'swal2-confirm'
+                    }
+                });
+            }
+        }
+
+        // Initialize when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            new MobileLoginManager();
+        });
+
+        // Performance optimization for low-end devices
+        if (navigator.hardwareConcurrency && navigator.hardwareConcurrency < 4) {
+            document.documentElement.style.setProperty('--animation-duration', '0s');
+        }
+
+        // Enhanced error handling for the original login function
+        const originalLogin = window.login;
+        window.login = function() {
+            try {
+                return originalLogin.apply(this, arguments);
+            } catch (error) {
+                console.error('Enhanced login error handling:', error);
+                
+                // Show user-friendly error message
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Connection Error',
+                    text: 'Unable to connect to the server. Please check your connection and try again.',
+                    confirmButtonText: 'Retry',
+                    background: 'rgba(255, 255, 255, 0.1)',
+                    color: '#ffffff',
+                    backdrop: 'rgba(0, 0, 0, 0.8)'
+                });
+            }
+        };
+    </script>
+</body>
+</html>
